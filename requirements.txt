@@ -70,6 +70,7 @@ frozendict @ file:///D:/bld/frozendict_1715092939904/work
 frozenlist @ file:///D:/bld/frozenlist_1725395842353/work
 future @ file:///home/conda/feedstock_root/build_artifacts/future_1708610096684/work
 gssapi @ file:///D:/bld/python-gssapi_1697144135989/work
+gunicorn==23.0.0
 h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1634280454336/work
 hpack==4.0.0
 hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1619110129307/work
