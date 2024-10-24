@@ -40,7 +40,12 @@ def create_downwind():
 def select_downwind():
     return render_template('select_downwind.html', downwinds=downwinds)
 
+
+
 # Página para registrar un participante
+
+participants = {}
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -86,8 +91,11 @@ def register():
     if not downwind_name:
         return "Error: No downwind selected", 400
 
-    # Renderizar la página de registro
-    return render_template('register.html', downwind_name=downwind_name)
+    # Obtener la lista de participantes ya registrados para este downwind
+    downwind_participants = participants.get(downwind_name, [])
+
+    # Renderizar la página de registro junto con la lista de participantes existentes
+    return render_template('register.html', downwind_name=downwind_name, participants=downwind_participants)
 
 
 # @app.route('/register', methods=['GET', 'POST'])
