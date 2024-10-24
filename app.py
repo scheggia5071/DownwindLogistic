@@ -36,31 +36,24 @@ def select_downwind():
     return render_template('select_downwind.html', downwinds=downwinds)
 
 # Página para registrar un participante
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    # Verificar qué datos se están recibiendo
-    downwind_name = request.form.get('downwind_name')
-    name = request.form.get('name')
-    vehicle = request.form.get('vehicle') == 'on'
-    seats = request.form.get('seats')
+    if request.method == 'POST':
+        downwind_name = request.form.get('downwind_name')
+        name = request.form.get('name')
+        vehicle = request.form.get('vehicle') == 'on'
+        seats = request.form.get('seats')
 
-    print(f"downwind_name: {downwind_name}, name: {name}, vehicle: {vehicle}, seats: {seats}")
+        if downwind_name not in participants:
+            participants[downwind_name] = []
 
-    # Asegurarse de que el downwind_name no esté vacío
-    if not downwind_name:
-        return "Error: No downwind selected", 400
+        participants[downwind_name].append({
+            'name': name,
+            'vehicle': vehicle,
+            'seats': seats
+        })
 
-    if downwind_name not in participants:
-        participants[downwind_name] = []
-
-    participants[downwind_name].append({
-        'name': name,
-        'vehicle': vehicle,
-        'seats': seats
-    })
-
-    # Redirigir correctamente
-    return redirect(url_for('show_participants', downwind_name=downwind_name))
+        return redirect(url_for('show_participants', downwind_name=downwind_name))
 
     downwind_name = request.args.get('downwind_name')
     return render_template('register.html', downwind_name=downwind_name)
