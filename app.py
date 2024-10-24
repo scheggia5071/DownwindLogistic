@@ -91,10 +91,10 @@ def register():
     if not downwind_name:
         return "Error: No downwind selected", 400
 
-    # Obtener la lista de participantes ya registrados para este downwind
+   # Verificar que se obtengan los participantes existentes
     downwind_participants = participants.get(downwind_name, [])
+    print(f"Mostrando participantes para {downwind_name}: {downwind_participants}")
 
-    # Renderizar la página de registro junto con la lista de participantes existentes
     return render_template('register.html', downwind_name=downwind_name, participants=downwind_participants)
 
 
