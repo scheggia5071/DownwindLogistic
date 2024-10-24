@@ -41,7 +41,7 @@ def select_downwind():
     return render_template('select_downwind.html', downwinds=downwinds)
 
 # Página para registrar un participante
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     try:
         # Obtener el nombre del downwind desde el formulario
