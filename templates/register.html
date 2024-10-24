@@ -2,27 +2,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downwind Foil Registration</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Registro para {{ downwind_name }}</title>
 </head>
 <body>
     <h1>Registro de Participantes para: {{ downwind_name }}</h1>
+
     <form action="/register" method="POST">
-		<!-- Campo oculto para pasar el downwind_name -->
-		<input type="hidden" name="downwind_name" value="{{ downwind_name }}">
+        <!-- Campo oculto para pasar el downwind_name -->
+        <input type="hidden" name="downwind_name" value="{{ downwind_name }}">
 
-		<label for="name">Nombre:</label>
-		<input type="text" id="name" name="name" required><br><br>
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required><br><br>
 
-		<label for="vehicle">¿Tienes vehículo?</label>
-		<input type="checkbox" id="vehicle" name="vehicle"><br><br>
+        <label for="vehicle">¿Tienes vehículo?</label>
+        <input type="checkbox" id="vehicle" name="vehicle"><br><br>
 
-		<label for="seats">¿Cuántas plazas disponibles?</label>
-		<input type="number" id="seats" name="seats" min="0" value="0"><br><br>
+        <label for="seats">¿Cuántas plazas disponibles?</label>
+        <input type="number" id="seats" name="seats" min="0" value="0"><br><br>
 
-		<button type="submit">Registrarse</button>
-<	/form>
-
+        <button type="submit">Registrarse</button>
     </form>
+
+    <h2>Participantes ya registrados</h2>
+    <ul>
+        {% if participants %}
+            {% for participant in participants %}
+            <li>
+                <strong>Nombre:</strong> {{ participant.name }} |
+                <strong>Vehículo:</strong> {{ 'Sí' if participant.vehicle else 'No' }} |
+                <strong>Plazas disponibles:</strong> {{ participant.seats }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li>No hay participantes registrados todavía.</li>
+        {% endif %}
+    </ul>
+
+    <a href="/">Volver a la página de inicio</a>
 </body>
 </html>
