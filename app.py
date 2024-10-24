@@ -15,6 +15,7 @@ def home():
 @app.route('/create_downwind', methods=['GET', 'POST'])
 def create_downwind():
     if request.method == 'POST':
+        # Procesar los datos del formulario cuando se envía
         date = request.form.get('date')
         time = request.form.get('time')
         run = request.form.get('run')
@@ -26,9 +27,13 @@ def create_downwind():
             'time': time,
             'run': run
         })
+
+        # Redirigir al formulario de registro
         return redirect(url_for('register', downwind_name=downwind_name))
 
+    # Mostrar la página de creación de downwind si es un GET
     return render_template('create_downwind.html')
+
 
 # Página para seleccionar un downwind existente
 @app.route('/select_downwind')
@@ -38,28 +43,22 @@ def select_downwind():
 # Página para registrar un participante
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    downwind_name = request.form.get('downwind_name')
-    name = request.form.get('name')
-    vehicle = request.form.get('vehicle') == 'on'
-    seats = request.form.get('seats')
+    if request.method == 'POST':
+        downwind_name = request.form.get('downwind_name')
+        name = request.form.get('name')
+        vehicle = request.form.get('vehicle') == 'on'
+        seats = request.form.get('seats')
 
-    # Asegurarse de que el downwind_name no esté vacío
-    if not downwind_name:
-        return "Error: No downwind selected", 400
+        if downwind_name not in participants:
+            participants[downwind_name] = []
 
-    if downwind_name not in participants:
-        participants[downwind_name] = []
+        participants[downwind_name].append({
+            'name': name,
+            'vehicle': vehicle,
+            'seats': seats
+        })
 
-    participants[downwind_name].append({
-        'name': name,
-        'vehicle': vehicle,
-        'seats': seats
-    })
-
-    # Redirigir manualmente a la URL
-    redirect_url = f"/participants/{downwind_name}"
-    print(f"Redirigiendo a {redirect_url}")
-    return redirect(redirect_url)
+        return redirect(url_for('show_participants', downwind_name=downwind_name))
 
     downwind_name = request.args.get('downwind_name')
     return render_template('register.html', downwind_name=downwind_name)
