@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logística del Transporte para {{ downwind_name }}</title>
+</head>
+<body>
+    <h1>Logística del Transporte para {{ downwind_name }}</h1>
+
+    <h2>Participantes con Vehículo</h2>
+    <ul>
+        {% if with_vehicle %}
+            {% for participant in with_vehicle %}
+            <li>
+                <strong>Nombre:</strong> {{ participant.name }} |
+                <strong>Plazas disponibles:</strong> {{ participant.seats }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li>No hay participantes con vehículo registrados todavía.</li>
+        {% endif %}
+    </ul>
+
+    <h2>Participantes sin Vehículo</h2>
+    <ul>
+        {% if without_vehicle %}
+            {% for participant in without_vehicle %}
+            <li>
+                <strong>Nombre:</strong> {{ participant.name }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li>Todos los participantes tienen vehículo.</li>
+        {% endif %}
+    </ul>
+
+    <h3>Total de Plazas Disponibles: {{ total_seats_available }}</h3>
+
+    <!-- Botón para confirmar que todos los participantes están inscritos -->
+    <form action="/confirm_participants/{{ downwind_name }}" method="POST">
+        <button type="submit">Todos los participantes están inscritos</button>
+    </form>
+
+    <a href="/">Volver a la página de inicio</a>
+</body>
+</html>

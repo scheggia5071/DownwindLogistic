@@ -130,3 +130,21 @@ def delete_participant(downwind_name, participant_name):
         print(f"Error eliminando participante: {e}")
         return "Internal Server Error", 500
 
+#Confirmación de que todos los participantes estan inscritos
+@app.route('/confirm_participants/<downwind_name>', methods=['POST'])
+def confirm_participants(downwind_name):
+    try:
+        # Confirmar que todos los participantes están inscritos
+        print(f"Confirmación recibida: Todos los participantes para {downwind_name} están inscritos.")
+        
+        # Redirigir a la siguiente fase o página
+        return redirect(url_for('logistics_planning', downwind_name=downwind_name))
+    
+    except Exception as e:
+        print(f"Error durante la confirmación: {e}")
+        return "Internal Server Error", 500
+
+
+@app.route('/logistics_planning/<downwind_name>')
+def logistics_planning(downwind_name):
+    return render_template('logistics_planning.html', downwind_name=downwind_name)
