@@ -2,10 +2,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participantes Registrados para {{ downwind_name }}</title>
+    <title>Participantes para {{ downwind_name }}</title>
 </head>
 <body>
-    <h1>Participantes Registrados para {{ downwind_name }}</h1>
+    <h1>Participantes registrados para: {{ downwind_name }}</h1>
 
     <ul>
         {% if participants %}
@@ -14,6 +14,10 @@
                 <strong>Nombre:</strong> {{ participant.name }} |
                 <strong>Vehículo:</strong> {{ 'Sí' if participant.vehicle else 'No' }} |
                 <strong>Plazas disponibles:</strong> {{ participant.seats }}
+                <!-- Formulario para eliminar participante -->
+                <form action="{{ url_for('delete_participant', downwind_name=downwind_name, participant_name=participant.name | urlencode) }}" method="POST" style="display:inline;">
+                    <button type="submit">Eliminar</button>
+                </form>
             </li>
             {% endfor %}
         {% else %}
@@ -21,7 +25,12 @@
         {% endif %}
     </ul>
 
-    <!-- Botones para navegación -->
+    <!-- Botón para confirmar que todos los participantes están inscritos -->
+    <form action="{{ url_for('confirm_participants', downwind_name=downwind_name) }}" method="POST" style="margin-top:20px;">
+        <button type="submit">Todos los participantes están inscritos</button>
+    </form>
+
+    <!-- Botones de navegación -->
     <div style="margin-top: 20px;">
         <a href="/" style="text-decoration: none;">
             <button>Volver a la página inicial</button>
