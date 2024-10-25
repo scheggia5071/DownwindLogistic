@@ -130,26 +130,6 @@ def delete_participant(downwind_name, participant_name):
         print(f"Error eliminando participante: {e}")
         return "Internal Server Error", 500
 
-# def delete_participant(downwind_name, participant_name):
-#     try:
-#         # Buscar los participantes del downwind
-#         downwind_participants = participants.get(downwind_name, [])
-
-#         # Filtrar la lista de participantes para eliminar al participante seleccionado
-#         new_participants = [p for p in downwind_participants if p['name'] != participant_name]
-
-#         # Actualizar la lista de participantes para ese downwind
-#         participants[downwind_name] = new_participants
-
-#         print(f"Participante {participant_name} eliminado de {downwind_name}.")
-        
-#         # Redirigir a la página de registro para el mismo downwind
-#         return redirect(url_for('register', downwind_name=downwind_name))
-
-#     except Exception as e:
-#         print(f"Error eliminando participante: {e}")
-#         return "Internal Server Error", 500
-
 #Confirmación de que todos los participantes estan inscritos
 @app.route('/confirm_participants/<downwind_name>', methods=['POST'])
 def confirm_participants(downwind_name):
@@ -168,3 +148,19 @@ def confirm_participants(downwind_name):
 @app.route('/logistics_planning/<downwind_name>')
 def logistics_planning(downwind_name):
     return render_template('logistics_planning.html', downwind_name=downwind_name)
+
+@app.route('/logistics/<downwind_name>', methods=['GET'])
+def logistics(downwind_name):
+    # Obtener los participantes registrados para este downwind
+    downwind_participants = participants.get(downwind_name, [])
+
+    # Separar a los participantes en dos listas: con coche y sin coche
+    with_vehicle = [p for p in downwind_participants if p['vehicle']]
+    without_vehicle = [p for p in downwind_participants if not p['vehicle']]
+
+    # Calcular el total de plazas disponibles
+    total_seats_available = sum(int(p['seats']) for p in with_vehicle)
+
+    # Renderizar la página de logística
+    return render_template('logistics.html', downwind_name=downwind_name, with_vehicle=with_vehicle, without_vehicle=without_vehicle, total_seats_available=total_seats_available)
+
