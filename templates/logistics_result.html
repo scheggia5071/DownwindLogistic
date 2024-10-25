@@ -2,27 +2,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado de la Planificación del Transporte</title>
+    <title>Resultado de la Planificación de Transporte para {{ downwind_name }}</title>
 </head>
 <body>
-    <h1>Planificación del Transporte para {{ downwind_name }}</h1>
+    <h1>Resultado de la Planificación de Transporte para {{ downwind_name }}</h1>
 
-    <h2>Vehículos en la llegada</h2>
+    <h2>Vehículos asignados a la salida</h2>
     <ul>
-        {% for vehicle in vehicles_to_llegada %}
-        <li>{{ vehicle.name }} - Plazas: {{ vehicle.seats }}</li>
-        {% endfor %}
+        {% if vehicles_to_salida %}
+            {% for vehicle in vehicles_to_salida %}
+            <li>Nombre: {{ vehicle.name }} | Plazas disponibles: {{ vehicle.seats }}</li>
+            {% endfor %}
+        {% else %}
+            <li>No hay vehículos asignados a la salida.</li>
+        {% endif %}
     </ul>
 
-    <h2>Vehículos en la salida</h2>
+    <h2>Vehículos que se quedarán en la llegada</h2>
     <ul>
-        {% for vehicle in vehicles_to_salida %}
-        <li>{{ vehicle.name }} - Plazas: {{ vehicle.seats }}</li>
-        {% endfor %}
+        {% if vehicles_to_llegada %}
+            {% for vehicle in vehicles_to_llegada %}
+            <li>Nombre: {{ vehicle.name }} | Plazas disponibles: {{ vehicle.seats }}</li>
+            {% endfor %}
+        {% else %}
+            <li>No hay vehículos asignados a la llegada.</li>
+        {% endif %}
     </ul>
 
-    <h3>{{ message }}</h3>
+    <p>{{ message }}</p>
 
     <a href="/">Volver a la página de inicio</a>
 </body>
 </html>
+

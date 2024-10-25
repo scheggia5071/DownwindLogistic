@@ -199,39 +199,64 @@ def update_transport(downwind_name):
 def confirm_transport_plan(downwind_name):
     # Obtener los participantes registrados
     downwind_participants = participants.get(downwind_name, [])
-
+    
     if not downwind_participants:
         return "No participants found", 404
 
     # Filtrar los participantes con y sin vehículo
     with_vehicle = [p for p in downwind_participants if p['vehicle']]
     without_vehicle = [p for p in downwind_participants if not p['vehicle']]
-
+    
     # Total de participantes sin vehículo
     total_participants_without_vehicle = len(without_vehicle)
 
+    # Total de participantes (incluyendo conductores)
+    total_participants = len(downwind_participants)
+    
     # Ordenar los vehículos por número de plazas disponibles de mayor a menor
     sorted_with_vehicle = sorted(with_vehicle, key=lambda x: int(x['seats']), reverse=True)
-
-    # Asignar vehículos a la llegada hasta cubrir el número de plazas necesarias
-    vehicles_to_llegada = []
-    total_seats_llegada = 0
-
+    
+    # Etapa 1: Llevar a todos desde la llegada hasta la salida
+    vehicles_to_salida = []
+    total_seats_salida = 0
+    
     for vehicle in sorted_with_vehicle:
-        if total_seats_llegada < total_participants_without_vehicle:
+        if total_seats_salida < total_participants:  # Todos deben tener un asiento al salir
+            vehicles_to_salida.append(vehicle)
+            total_seats_salida += int(vehicle['seats'])
+        else:
+            break
+
+    # Etapa 2: Volver a la salida para recoger los coches (intento de llevar a todos)
+    vehicles_to_llegada = []  # Coches que se quedarán en la llegada
+    total_seats_llegada = 0
+    
+    for vehicle in vehicles_to_salida:
+        # Se necesitan plazas suficientes para que todos (conductores + no conductores) vuelvan a la salida
+        if total_seats_llegada < total_participants:
             vehicles_to_llegada.append(vehicle)
             total_seats_llegada += int(vehicle['seats'])
         else:
             break
 
-    # Los vehículos que no van a la llegada se quedan en la salida
-    vehicles_to_salida = [v for v in sorted_with_vehicle if v not in vehicles_to_llegada]
-
-    # Verificar si hay suficientes plazas
-    if total_seats_llegada >= total_participants_without_vehicle:
-        message = "Hay suficientes plazas disponibles para todos los participantes sin vehículo."
+    # Verificar si hay suficientes plazas para todos
+    if total_seats_llegada >= total_participants:
+        message = "Hay suficientes plazas disponibles para que todos los participantes regresen a la salida."
     else:
-        message = f"No hay suficientes plazas disponibles. Plazas faltantes: {total_participants_without_vehicle - total_seats_llegada}"
+        # Si no hay suficientes plazas para todos, verificar si al menos los conductores pueden regresar
+        total_seats_llegada_conductores = 0
+        vehicles_to_llegada = []  # Reiniciar para la segunda verificación
+        for vehicle in vehicles_to_salida:
+            if total_seats_llegada_conductores < len(vehicles_to_salida):
+                vehicles_to_llegada.append(vehicle)
+                total_seats_llegada_conductores += int(vehicle['seats'])
+            else:
+                break
+        
+        if total_seats_llegada_conductores >= len(vehicles_to_salida):
+            message = "No hay suficientes plazas para todos, pero al menos los conductores pueden regresar a la salida."
+        else:
+            message = f"No hay suficientes plazas ni siquiera para los conductores. Plazas faltantes: {len(vehicles_to_salida) - total_seats_llegada_conductores}"
 
     # Renderizar la página de resultados
     return render_template('logistics_result.html', downwind_name=downwind_name, vehicles_to_llegada=vehicles_to_llegada, vehicles_to_salida=vehicles_to_salida, message=message)
