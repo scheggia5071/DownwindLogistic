@@ -32,8 +32,9 @@
                 <strong>Vehículo:</strong> {{ 'Sí' if participant.vehicle else 'No' }} |
                 <strong>Plazas disponibles:</strong> {{ participant.seats }}
 				<!-- Formulario para eliminar participante -->
-				<form action="{{ url_for('delete_participant', downwind_name=downwind_name, participant_name=participant.name) }}" method="POST" style="display:inline;">
+				<form action="{{ url_for('delete_participant', downwind_name=downwind_name, participant_name=participant.name | urlencode) }}" method="POST" style="display:inline;">
 					<button type="submit">Eliminar</button>
+				</form>
             </li>
 			
             {% endfor %}
