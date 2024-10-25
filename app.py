@@ -98,28 +98,6 @@ def register():
     return render_template('register.html', downwind_name=downwind_name, participants=downwind_participants)
 
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         downwind_name = request.form.get('downwind_name')
-#         name = request.form.get('name')
-#         vehicle = request.form.get('vehicle') == 'on'
-#         seats = request.form.get('seats')
-
-#         if downwind_name not in participants:
-#             participants[downwind_name] = []
-
-#         participants[downwind_name].append({
-#             'name': name,
-#             'vehicle': vehicle,
-#             'seats': seats
-#         })
-
-#         return redirect(url_for('show_participants', downwind_name=downwind_name))
-
-#     downwind_name = request.args.get('downwind_name')
-#     return render_template('register.html', downwind_name=downwind_name)
-
 # Página para mostrar los participantes de un downwind específico
 @app.route('/participants/<downwind_name>')
 def show_participants(downwind_name):
@@ -128,6 +106,27 @@ def show_participants(downwind_name):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+    
+# Codigo para añadir la posibilidad de eliminar un participante
+@app.route('/delete_participant/<downwind_name>/<participant_name>', methods=['POST'])
+def delete_participant(downwind_name, participant_name):
+    try:
+        # Buscar los participantes del downwind
+        downwind_participants = participants.get(downwind_name, [])
 
+        # Filtrar la lista de participantes para eliminar al participante seleccionado
+        new_participants = [p for p in downwind_participants if p['name'] != participant_name]
 
+        # Actualizar la lista de participantes para ese downwind
+        participants[downwind_name] = new_participants
+
+        print(f"Participante {participant_name} eliminado de {downwind_name}.")
+        
+        # Redirigir a la página de registro para el mismo downwind
+        return redirect(url_for('register', downwind_name=downwind_name))
+
+    except Exception as e:
+        print(f"Error eliminando participante: {e}")
+        return "Internal Server Error", 500
 
