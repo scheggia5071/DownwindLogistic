@@ -26,8 +26,7 @@
         {% if without_vehicle %}
             {% for participant in without_vehicle %}
             <li>
-                <strong>Nombre:</strong> {{ participant.name }}
-            </li>
+                <strong>Nombre:</strong> {{ participant.name }}</li>
             {% endfor %}
         {% else %}
             <li>Todos los participantes tienen vehículo.</li>
@@ -36,7 +35,11 @@
 
     <h3>Total de Plazas Disponibles: {{ total_seats_available }}</h3>
 
+    <!-- Nuevo botón para confirmar la planificación del transporte -->
+    <form action="{{ url_for('confirm_transport_plan', downwind_name=downwind_name) }}" method="POST">
+        <button type="submit">Confirmar y Planificar Transporte</button>
+    </form>
+
     <a href="/">Volver a la página de inicio</a>
 </body>
 </html>
-
