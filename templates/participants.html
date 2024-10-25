@@ -15,6 +15,12 @@
         </li>
         {% endfor %}
     </ul>
+	
+	<!-- Botón para confirmar que todos los participantes están inscritos -->
+    <form action="/confirm_participants/{{ downwind_name }}" method="POST" style="margin-top:20px;">
+        <button type="submit">Todos los participantes están inscritos</button>
+    </form>
+	
     <a href="/">Volver al registro</a>
 </body>
 </html>
