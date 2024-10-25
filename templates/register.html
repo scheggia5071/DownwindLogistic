@@ -44,17 +44,14 @@
     </ul>
 	
 	<!-- Botón para confirmar que todos los participantes están inscritos -->
-    <form action="/confirm_participants/{{ downwind_name }}" method="POST" style="margin-top:20px;">
-        <button type="submit">Todos los participantes están inscritos</button>
-    </form>
+    <form action="{{ url_for('confirm_participants', downwind_name=downwind_name) }}" method="POST" style="margin-top:20px;">
+		<button type="submit">Todos los participantes están inscritos</button>
+	</form>
 	
 	<!-- Botones para navegación -->
     <div style="margin-top: 20px;">
         <a href="/" style="text-decoration: none;">
             <button>Volver a la página inicial</button>
-        </a>
-        <a href="{{ url_for('register', downwind_name=downwind_name) }}" style="text-decoration: none;">
-            <button>Registra otro participante</button>
         </a>
     </div>
 
