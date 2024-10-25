@@ -194,3 +194,45 @@ def update_transport(downwind_name):
         message = "No hay suficientes plazas disponibles. Plazas faltantes: " + str(total_participants_without_vehicle - total_seats_llegada)
 
     return render_template('logistics_result.html', downwind_name=downwind_name, vehicles_to_llegada=vehicles_to_llegada, vehicles_to_salida=vehicles_to_salida, message=message)
+
+@app.route('/confirm_transport_plan/<downwind_name>', methods=['POST'])
+def confirm_transport_plan(downwind_name):
+    # Obtener los participantes registrados
+    downwind_participants = participants.get(downwind_name, [])
+
+    if not downwind_participants:
+        return "No participants found", 404
+
+    # Filtrar los participantes con y sin vehículo
+    with_vehicle = [p for p in downwind_participants if p['vehicle']]
+    without_vehicle = [p for p in downwind_participants if not p['vehicle']]
+
+    # Total de participantes sin vehículo
+    total_participants_without_vehicle = len(without_vehicle)
+
+    # Ordenar los vehículos por número de plazas disponibles de mayor a menor
+    sorted_with_vehicle = sorted(with_vehicle, key=lambda x: int(x['seats']), reverse=True)
+
+    # Asignar vehículos a la llegada hasta cubrir el número de plazas necesarias
+    vehicles_to_llegada = []
+    total_seats_llegada = 0
+
+    for vehicle in sorted_with_vehicle:
+        if total_seats_llegada < total_participants_without_vehicle:
+            vehicles_to_llegada.append(vehicle)
+            total_seats_llegada += int(vehicle['seats'])
+        else:
+            break
+
+    # Los vehículos que no van a la llegada se quedan en la salida
+    vehicles_to_salida = [v for v in sorted_with_vehicle if v not in vehicles_to_llegada]
+
+    # Verificar si hay suficientes plazas
+    if total_seats_llegada >= total_participants_without_vehicle:
+        message = "Hay suficientes plazas disponibles para todos los participantes sin vehículo."
+    else:
+        message = f"No hay suficientes plazas disponibles. Plazas faltantes: {total_participants_without_vehicle - total_seats_llegada}"
+
+    # Renderizar la página de resultados
+    return render_template('logistics_result.html', downwind_name=downwind_name, vehicles_to_llegada=vehicles_to_llegada, vehicles_to_salida=vehicles_to_salida, message=message)
+
