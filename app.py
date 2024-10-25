@@ -207,8 +207,13 @@ def confirm_transport_plan(downwind_name):
     with_vehicle = [p for p in downwind_participants if p['vehicle']]
     without_vehicle = [p for p in downwind_participants if not p['vehicle']]
 
+    print("Participantes con vehículo:", with_vehicle)  # Debug
+    print("Participantes sin vehículo:", without_vehicle)  # Debug
+
     # Ordenar los vehículos por número de plazas disponibles de mayor a menor
     sorted_with_vehicle = sorted(with_vehicle, key=lambda x: int(x['seats']), reverse=True)
+
+    print("Vehículos ordenados:", sorted_with_vehicle)  # Debug
 
     # Etapa 1: Asignar pasajeros para el viaje a la salida
     seats_assignments_salida = []
@@ -218,6 +223,7 @@ def confirm_transport_plan(downwind_name):
     for vehicle in sorted_with_vehicle:
         if total_seats_salida < len(downwind_participants):  # Aún hay pasajeros por asignar
             vehicle_passengers = remaining_passengers[:int(vehicle['seats'])]  # Asignar los primeros disponibles
+            print("Asignando a salida:", vehicle['name'], "Pasajeros:", vehicle_passengers)  # Debug
             seats_assignments_salida.append({'vehicle': vehicle, 'passengers': vehicle_passengers})
             total_seats_salida += int(vehicle['seats'])
             remaining_passengers = remaining_passengers[int(vehicle['seats']):]  # Actualizar pasajeros restantes
@@ -232,6 +238,7 @@ def confirm_transport_plan(downwind_name):
     for vehicle in sorted_with_vehicle:
         if total_seats_llegada < len(remaining_passengers):  # Aún hay pasajeros por asignar
             vehicle_passengers = remaining_passengers[:int(vehicle['seats'])]  # Asignar los primeros disponibles
+            print("Asignando a llegada:", vehicle['name'], "Pasajeros:", vehicle_passengers)  # Debug
             seats_assignments_llegada.append({'vehicle': vehicle, 'passengers': vehicle_passengers})
             total_seats_llegada += int(vehicle['seats'])
             remaining_passengers = remaining_passengers[int(vehicle['seats']):]  # Actualizar pasajeros restantes
