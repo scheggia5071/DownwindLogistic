@@ -115,7 +115,7 @@ def delete_participant(downwind_name, participant_name):
         # Buscar los participantes del downwind
         downwind_participants = participants.get(downwind_name, [])
 
-        # Filtrar la lista de participantes para eliminar al participante seleccionado
+        # Filtrar la lista de participantes para eliminar al participante específico
         new_participants = [p for p in downwind_participants if p['name'] != participant_name]
 
         # Actualizar la lista de participantes para ese downwind
@@ -130,20 +130,27 @@ def delete_participant(downwind_name, participant_name):
         print(f"Error eliminando participante: {e}")
         return "Internal Server Error", 500
 
-#Confirmación de que todos los participantes estan inscritos
-@app.route('/confirm_participants/<downwind_name>', methods=['POST'])
-# def confirm_participants(downwind_name):
+# def delete_participant(downwind_name, participant_name):
 #     try:
-#         # Confirmar que todos los participantes están inscritos
-#         print(f"Confirmación recibida: Todos los participantes para {downwind_name} están inscritos.")
+#         # Buscar los participantes del downwind
+#         downwind_participants = participants.get(downwind_name, [])
+
+#         # Filtrar la lista de participantes para eliminar al participante seleccionado
+#         new_participants = [p for p in downwind_participants if p['name'] != participant_name]
+
+#         # Actualizar la lista de participantes para ese downwind
+#         participants[downwind_name] = new_participants
+
+#         print(f"Participante {participant_name} eliminado de {downwind_name}.")
         
-#         # Redirigir a la siguiente fase o página
-#         return redirect(url_for('logistics_planning', downwind_name=downwind_name))
-    
+#         # Redirigir a la página de registro para el mismo downwind
+#         return redirect(url_for('register', downwind_name=downwind_name))
+
 #     except Exception as e:
-#         print(f"Error durante la confirmación: {e}")
+#         print(f"Error eliminando participante: {e}")
 #         return "Internal Server Error", 500
 
+#Confirmación de que todos los participantes estan inscritos
 @app.route('/confirm_participants/<downwind_name>', methods=['POST'])
 def confirm_participants(downwind_name):
     try:
