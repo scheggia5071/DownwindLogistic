@@ -131,28 +131,31 @@ def delete_participant(downwind_name, participant_name):
         return "Internal Server Error", 500
 
 #Confirmación de que todos los participantes estan inscritos
-@app.route('/confirm_participants/<downwind_name>', methods=['POST'])
-def confirm_participants(downwind_name):
-    try:
-        # Confirmar que todos los participantes están inscritos
-        print(f"Confirmación recibida: Todos los participantes para {downwind_name} están inscritos.")
+# @app.route('/confirm_participants/<downwind_name>', methods=['POST'])
+# def confirm_participants(downwind_name):
+#     try:
+#         # Confirmar que todos los participantes están inscritos
+#         print(f"Confirmación recibida: Todos los participantes para {downwind_name} están inscritos.")
         
-        # Redirigir a la siguiente fase o página
-        return redirect(url_for('logistics_planning', downwind_name=downwind_name))
+#         # Redirigir a la siguiente fase o página
+#         return redirect(url_for('logistics_planning', downwind_name=downwind_name))
     
-    except Exception as e:
-        print(f"Error durante la confirmación: {e}")
-        return "Internal Server Error", 500
+#     except Exception as e:
+#         print(f"Error durante la confirmación: {e}")
+#         return "Internal Server Error", 500
 
 
-@app.route('/logistics_planning/<downwind_name>')
-def logistics_planning(downwind_name):
-    return render_template('logistics_planning.html', downwind_name=downwind_name)
+# @app.route('/logistics_planning/<downwind_name>')
+# def logistics_planning(downwind_name):
+#     return render_template('logistics_planning.html', downwind_name=downwind_name)
 
 @app.route('/logistics/<downwind_name>', methods=['GET'])
 def logistics(downwind_name):
-    # Obtener los participantes registrados para este downwind
-    downwind_participants = participants.get(downwind_name, [])
+    # Verifica que la clave del downwind exista en los participantes
+    if downwind_name in participants:
+        downwind_participants = participants[downwind_name]
+    else:
+        downwind_participants = []
 
     # Separar a los participantes en dos listas: con coche y sin coche
     with_vehicle = [p for p in downwind_participants if p['vehicle']]
@@ -163,4 +166,3 @@ def logistics(downwind_name):
 
     # Renderizar la página de logística
     return render_template('logistics.html', downwind_name=downwind_name, with_vehicle=with_vehicle, without_vehicle=without_vehicle, total_seats_available=total_seats_available)
-
