@@ -2,25 +2,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participantes para {{ downwind_name }}</title>
+    <title>Participantes Registrados para {{ downwind_name }}</title>
 </head>
 <body>
-    <h1>Participantes registrados para: {{ downwind_name }}</h1>
+    <h1>Participantes Registrados para {{ downwind_name }}</h1>
+
     <ul>
-        {% for participant in participants %}
-        <li>
-            <strong>Nombre:</strong> {{ participant.name }} |
-            <strong>Vehículo:</strong> {{ 'Sí' if participant.vehicle else 'No' }} |
-            <strong>Plazas disponibles:</strong> {{ participant.seats }}
-        </li>
-        {% endfor %}
+        {% if participants %}
+            {% for participant in participants %}
+            <li>
+                <strong>Nombre:</strong> {{ participant.name }} |
+                <strong>Vehículo:</strong> {{ 'Sí' if participant.vehicle else 'No' }} |
+                <strong>Plazas disponibles:</strong> {{ participant.seats }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li>No hay participantes registrados todavía.</li>
+        {% endif %}
     </ul>
-	
-	<!-- Botón para confirmar que todos los participantes están inscritos -->
-    <form action="/confirm_participants/{{ downwind_name }}" method="POST" style="margin-top:20px;">
-        <button type="submit">Todos los participantes están inscritos</button>
-    </form>
-	
-    <a href="/">Volver al registro</a>
+
+    <!-- Botones para navegación -->
+    <div style="margin-top: 20px;">
+        <a href="/" style="text-decoration: none;">
+            <button>Volver a la página inicial</button>
+        </a>
+        <a href="{{ url_for('register', downwind_name=downwind_name) }}" style="text-decoration: none;">
+            <button>Registra otro participante</button>
+        </a>
+    </div>
 </body>
 </html>
